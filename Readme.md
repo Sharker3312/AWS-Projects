@@ -2,7 +2,9 @@
 
 ## Serverless
 
-` Amplify - API Gateway - Lambda - IAM Policy - DynamoDB` 
+` Amplify - API Gateway - Lambda - IAM Policy - DynamoDB`
+
+[Link to project](https://github.com/Sharker3312/AWS-Projects/tree/main/Serverless/Exponent)
 
 Ideas to Improve the project
 
