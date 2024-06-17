@@ -4,11 +4,13 @@ module "sns" {
 
 module "sqs" {
   source = "./sqs"
+  topic_arn = module.sns.topic_arn
 }
 
 module "lambda" {
   source  = "./lambda"
-  sns_arn =    module.sns.sns_arn
+  topic_arn =    module.sns.topic_arn
+  sqs_url =  module.sqs.sqs_url
 
 }
 

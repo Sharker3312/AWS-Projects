@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "bucket" {
-  bucket = "notification-system-lambda" # Cambia el nombre del bucket según tus necesidades
+  bucket = var.bucket_name # Cambia el nombre del bucket según tus necesidades
 
 }
 
@@ -9,7 +9,7 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
   lambda_function {
     lambda_function_arn = var.lambda_function_arn
     events              = ["s3:ObjectCreated:*"]
-    filter_prefix       = "uploads/"
+    #filter_prefix       = "uploads/"
   }
 }
 

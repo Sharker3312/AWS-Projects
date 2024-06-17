@@ -1,28 +1,27 @@
 resource "aws_lambda_function" "lambda" {
-  filename         = "lambda/lambda_function.zip" # Asegúrate de tener el archivo zip con tu código Lambda
-  function_name    = "notification"
-  handler          = "lambda_function.lambda_handler" # Cambia el handler según tu código
-  runtime          = "python3.12" # Cambia la versión de runtime según tu código
+  filename         = var.filename # Asegúrate de tener el archivo zip con tu código Lambda
+  function_name    = var.function_name
+  handler          = var.handler # Cambia el handler según tu código
+  runtime          = var.runtime # Cambia la versión de runtime según tu código
   role             = aws_iam_role.lambda_role.arn
 
    environment {
      variables = {
-       #SQS_QUEUE_URL = module.sqs.aws_sq
-       SNS_TOPIC_ARN = var.sns_arn
+       SQS_QUEUE_URL = var.sqs_url
+       #SNS_TOPIC_ARN = var.topic_arn
      }
    }
 }
 
 resource "aws_iam_role" "lambda_role" {
-  name = "lambda_role"
+  name = var.name_role
 
-  assume_role_policy =file("lambda/lambda_assume_role_policy.json") 
+  assume_role_policy = file("lambda/lambda_assume_role_policy.json") 
 }
 
 resource "aws_iam_policy" "lambda_sns_sqs_policy" {
-  name        = "LambdaSNSandSQSFullAccess"
-  description = "Permisos completos para SNS y SQS"
-  policy      = file("lambda/lambda_policy.json") 
+  name        = var.name_policy
+  policy      = file("lambda/lambda_policy.json")  
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_sns_sqs_policy_attachment" {
