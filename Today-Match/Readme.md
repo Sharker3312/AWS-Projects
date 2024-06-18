@@ -1,5 +1,6 @@
 ## Today-Match🕒
-[](workflow.png)
+
+![](workflow.png)
 
 This repository contains an AWS Lambda function designed to send an email on a specific date using Amazon Simple Email Service (SES).
 
