@@ -7,14 +7,16 @@ image:
 variables:
   TF_VAR_gitlab_token: ${GITLAB_ACCESS_TOKEN}
   AWS_ACCESS_KEY_ID: ${MY_AWS_KEY}
-  AWS_SECRET_ACCESS_KEY : ${MY_AWS_ACCESS_KEY}
+  AWS_SECRET_ACCESS_KEY: ${MY_AWS_ACCESS_KEY}
   AWS_DEFAULT_REGION: "us-east-2"
+  TERRAFORM_DIR: "Notification-system/terraform"  # Define la variable de directorio
 
 cache:
   paths:
     - .terraform
 
 before_script:
+  - cd $TERRAFORM_DIR  # Cambia al directorio de Terraform
   - terraform --version
   - terraform init -backend-config="tfstate.config"
 
@@ -32,12 +34,12 @@ validate:
 plan:
   stage: plan
   script:
-    - terraform plan -out="planfile"
+    - terraform plan 
   dependencies:
     - validate
-  artifacts:
-    paths:
-      - planfile
+  #artifacts:
+    #paths:
+     # - $TERRAFORM_DIR/planfile  # Especifica el archivo en el directorio correcto
 
 apply:
   stage: apply
@@ -47,8 +49,8 @@ apply:
     - plan
   when: manual
 
-destroy: 
+destroy:
   stage: destroy
   script:
     - terraform destroy --auto-approve
-  when: manual 
+  when: manual
