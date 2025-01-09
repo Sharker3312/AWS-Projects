@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+      #- 50000:50000  Communication with the Jenkins agent (Slaves)
+    container_name: jenkins
+    volumes:
+      - /home/jenkins_home:/var/jenkins_home
+       - /var/run/docker.sock:/var/run/docker.sock  # Allow Jenkins to communicate with Docker daemon
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

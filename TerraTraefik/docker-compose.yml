@@ -1,0 +1,47 @@
+services:
+
+  traefik:
+    image: traefik:v3.2
+    container_name: traefik-demo-1
+    ports:
+      - 80:80
+      - 443:443
+      # -- (Optional) Enable Dashboard, don't do in production
+      - 8080:8080
+   
+    environment:
+      - CF_DNS_API_TOKEN = ${CF_DNS_API_TOKEN}
+
+    networks:
+      - frontend
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./config/traefik.yaml:/etc/traefik/traefik.yaml:ro
+      - ./config/dynamic.yaml:/etc/traefik/dynamic.yaml:ro
+     
+      - ./data/certs/:/var/traefik/certs/:rw
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-demo-1
+    networks:
+      - frontend
+
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.nginx-http.rule=Host(`d3vops.me`)
+      - traefik.http.routers.nginx-http.entrypoints=web
+    
+
+      - traefik.http.routers.nginx-https.tls=true
+      - traefik.http.routers.nginx-https.tls.certresolver=cloudflare
+      - traefik.http.routers.nginx-https.entrypoints=websecure
+      - traefik.http.routers.nginx-https.rule=Host(`d3vops.me`) 
+
+
+networks:
+  frontend:
+    external: true
+    
+    

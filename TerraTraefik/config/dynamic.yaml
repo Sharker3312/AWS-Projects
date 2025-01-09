@@ -1,0 +1,28 @@
+http:
+  middlewares:
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+        #permanent: true
+
+  routers:
+    nginx-http:
+      entryPoints:
+        - web
+      rule: "Host(`d3vops.me`)"
+      middlewares:
+        - redirect-to-https
+      service: nginx
+
+    nginx-https:
+      entryPoints:
+        - websecure
+      rule: "Host(`d3vops.me`)"
+      tls: true
+      service: nginx
+
+  services:
+    nginx:
+      loadBalancer:
+        servers:
+          - url: "http://nginx-demo-1:80"
