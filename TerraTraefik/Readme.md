@@ -10,3 +10,6 @@
 📄[Documentation](https://dev.to/sharker3312/provision-aws-ec2-instances-with-terraform-and-set-up-docker-via-user-data-2ik7)
 
 🔗[Link to project](https://github.com/Sharker3312/AWS-Projects/tree/main/TerraTraefik)
+
+![](terraform/Architecture.png)
+![](traefik.png)
