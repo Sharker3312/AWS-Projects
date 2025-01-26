@@ -2,12 +2,12 @@ services:
 
   traefik:
     image: traefik:v3.2
-    container_name: traefik-demo-1
+    container_name: traefik-demo
     ports:
       - 80:80
       - 443:443
       # -- (Optional) Enable Dashboard, don't do in production
-      - 8080:8080
+      #- 8080:8080
    
     environment:
       - CF_DNS_API_TOKEN = ${CF_DNS_API_TOKEN}
@@ -22,26 +22,42 @@ services:
       - ./data/certs/:/var/traefik/certs/:rw
     restart: unless-stopped
 
-  nginx:
-    image: nginx:latest
-    container_name: nginx-demo-1
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    restart: unless-stopped
+    #ports:
+      #- 80:8080
+      #- 50000:50000  Communication with the Jenkins agent (Slaves)
+    container_name: jenkins
+    volumes:
+      - /home/jenkins_home:/var/jenkins_home
+       - /var/run/docker.sock:/var/run/docker.sock  # Allow Jenkins to communicate with Docker daemon
+
     networks:
       - frontend
 
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.nginx-http.rule=Host(`d3vops.me`)
-      - traefik.http.routers.nginx-http.entrypoints=web
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
     
 
-      - traefik.http.routers.nginx-https.tls=true
-      - traefik.http.routers.nginx-https.tls.certresolver=cloudflare
-      - traefik.http.routers.nginx-https.entrypoints=websecure
-      - traefik.http.routers.nginx-https.rule=Host(`d3vops.me`) 
+    labels:
+      - traefik.enable=trters.jenkins-http.rule=Host(`jenkins.d3vops.me`)
+      - traefik.http.routers.jenkins-http.entrypoints=web
+    
+
+      - traefik.http.routers.jenkins-https.tls=true
+      - traefik.http.routers.jenkins-https.tls.certresolver=cloudflare
+      - traefik.http.routers.jenkins-https.entrypoints=websecure
+      - traefik.http.routers.jenkins-https.rule=Host(`jenkins.d3vops.me`) 
 
 
 networks:
   frontend:
     external: true
-    
     

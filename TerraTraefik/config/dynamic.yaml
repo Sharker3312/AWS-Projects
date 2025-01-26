@@ -6,23 +6,23 @@ http:
         #permanent: true
 
   routers:
-    nginx-http:
+    jenkins-http:
       entryPoints:
         - web
-      rule: "Host(`d3vops.me`)"
+      rule: "Host(`jenkins.d3vops.me`)"
       middlewares:
         - redirect-to-https
-      service: nginx
+      service: jenkins
 
-    nginx-https:
+    jenkins-https:
       entryPoints:
         - websecure
-      rule: "Host(`d3vops.me`)"
+      rule: "Host(`jenkins.d3vops.me`)"
       tls: true
-      service: nginx
+      service: jenkins
 
   services:
-    nginx:
+    jenkins:
       loadBalancer:
         servers:
-          - url: "http://nginx-demo-1:80"
+          - url: "http://jenkins:80"
